@@ -20,3 +20,15 @@ run("Convert to Mask", "method=Default background=Light");
 run("Fill Holes", "stack");
 run("Set Measurements...", "area fit shape feret's limit display add redirect=None decimal=3");
 run("Analyze Particles...", "size=20-Infinity display exclude summarize add stack");
+
+// for batch2
+run("Set Scale...", "distance=1406.0228 known=40 unit=mm global");
+run("Options...", "iterations=5 count=1");
+run("HSB Stack");
+run("Convert Stack to Images")
+selectWindow("Hue");
+setThreshold(0, 45);
+run("Convert to Mask", "method=Default background=Light");
+run("Fill Holes", "stack");
+run("Set Measurements...", "area fit shape feret's limit display add redirect=None decimal=3");
+run("Analyze Particles...", "size=20-Infinity display exclude summarize add stack");
