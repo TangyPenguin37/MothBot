@@ -1,8 +1,9 @@
 admin
 utils
-data/archive
-data/labelled/orig
-data/labelled/split
-data/labelled/split_corrected
-data/unlabelled_batch1/orig
-data/unlabelled_batch1/split
+archive/data
+data/original_labelled/orig
+data/original_labelled/split
+data/original_labelled/split_corrected
+data/batch1/orig
+data/batch1/split
+data/batch2

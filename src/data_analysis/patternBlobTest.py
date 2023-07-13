@@ -1,7 +1,7 @@
 import os
 import cv2
-from tqdm import tqdm
 import numpy as np
+from tqdm import tqdm
 
 TEST_IMAGE = 'data\\split\\arm\\front\\right\\CAM046068_d.jpg'
 
@@ -12,7 +12,7 @@ def show_image(name, image):
     cv2.namedWindow(name, cv2.WINDOW_NORMAL)
     cv2.imshow(name, image)
     cv2.waitKey(0)
-
+    
 def find_blobs(img):
 
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)

@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from sklearn.cluster import KMeans
 
-TEST_IMAGE = 'data/unlabelled_batch1/split/rear/right/CAM046087_v.jpg'
+TEST_IMAGE = 'data/batch1/split/rear/left/CAM046086_v.jpg'
 
 lower = np.array([0, 0, 0])
 upper = np.array([37, 255, 255])
@@ -27,7 +27,7 @@ contours = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0]
 contour = max(contours, key=cv2.contourArea, default=None)
 
 # second biggest
-# contour = sorted(contours, key=cv2.contourArea, reverse=True)[1]
+contour = sorted(contours, key=cv2.contourArea, reverse=True)[1]
 
 if cv2.contourArea(contour) < 50000 or contour is None:
     print("No leaf found!")

@@ -4,16 +4,24 @@ from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import StratifiedKFold, train_test_split, cross_val_score
 
 USE_CROSS_VAL = True
+USE_GROUPED_DATA = False
 
 # load and prepare data
-columns = list(range(1, 51))
-columns.remove(6)
-columns.remove(8)
+if USE_GROUPED_DATA:
+    columns = list(range(1, 194))
+    data = np.loadtxt('data/data_normalized_grouped.csv',
+                      delimiter=',',
+                      skiprows=1,
+                      usecols=columns)
+else:
+    columns = list(range(1, 51))
+    columns.remove(6)
+    columns.remove(8)
 
-data = np.loadtxt('data/data_normalized.csv',
-                  delimiter=',',
-                  skiprows=1,
-                  usecols=columns)
+    data = np.loadtxt('data/data_normalized.csv',
+                      delimiter=',',
+                      skiprows=1,
+                      usecols=columns)
 
 x = data[:, :-1]
 y = data[:, -1]

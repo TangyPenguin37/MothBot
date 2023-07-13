@@ -1,7 +1,7 @@
 from enum import IntEnum
+import colorsys
 import numpy as np
 import matplotlib.pyplot as plt
-import colorsys
 
 class Color(IntEnum):
     COLOR0 = 0
@@ -18,16 +18,15 @@ class Side(IntEnum):
     RIGHT = 1
 
 USE_HSV = False
-COLORS = [Color.COLOR0]
+COLORS = [Color.COLOR1]
 LOCATIONS = [Location.FRONT]
-SIDES = [Side.LEFT, Side.RIGHT]
+SIDES = [Side.RIGHT, Side.LEFT]
 
-csvData = np.loadtxt('data/labelled/data_normalized_onehot_simplified.csv',
-                     delimiter=',',
-                     skiprows=1,
-                     usecols=range(1, 52))
+filepath = 'data/original_labelled/data_normalized_onehot_simplified.csv'
 
-labels = np.loadtxt('data/labelled/data_normalized_onehot_simplified.csv',
+csvData = np.loadtxt(filepath, delimiter=',', skiprows=1, usecols=range(1, 52))
+
+labels = np.loadtxt(filepath,
                     delimiter=',',
                     dtype=np.str0,
                     max_rows=1,

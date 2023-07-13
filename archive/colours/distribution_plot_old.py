@@ -14,7 +14,7 @@ labels = np.loadtxt('data/labelled/data_normalized_onehot.csv',
                     max_rows=1,
                     usecols=range(1, 54))
 
-columns = [x for x in range(4, 53) if "colour_" + str(COLOR) in labels[x]]
+columns = [x for x in range(4, 53) if f"colour_{COLOR}" in labels[x]]
 columns = sorted([0, 1, 2, 3, 52] + columns)
 
 # print(columns)

@@ -4,16 +4,24 @@ from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import StratifiedKFold, train_test_split, cross_val_score
 
 USE_CROSS_VAL = True
+USE_CORRECTED_DATA = False
 
 # load and prepare data
-columns = range(1, 54)
+columns = range(1, 52)
 # columns.remove(9)
 # columns.remove(11)
 
-data = np.loadtxt('data/labelled/data_normalized_onehot.csv',
-                  delimiter=',',
-                  skiprows=1,
-                  usecols=columns)
+if USE_CORRECTED_DATA:
+    data = np.loadtxt(
+        'data/original_labelled/data_normalized_onehot_simplified_corrected.csv',
+        delimiter=',',
+        skiprows=1,
+        usecols=columns)
+else:
+    data = np.loadtxt('data/labelled/data_normalized_onehot_simplified.csv',
+                    delimiter=',',
+                    skiprows=1,
+                    usecols=columns)
 
 x = data[:, :-1]
 y = data[:, -1]
