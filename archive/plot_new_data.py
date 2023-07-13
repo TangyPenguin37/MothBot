@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # plot example data
-csvData = np.loadtxt('data/labelled/data_normalized_onehot.csv',
+csvData = np.loadtxt('data/data_formatted_no_hybrids_normalized.csv',
                      delimiter=',',
                      skiprows=1,
-                     usecols=range(1, 54))
+                     usecols=range(1, 52))
 
-labels = np.loadtxt('data/labelled/data_normalized_onehot.csv',
+labels = np.loadtxt('data/data_formatted_no_hybrids_normalized.csv',
                     delimiter=',',
                     dtype=np.str0)
 
@@ -16,15 +16,15 @@ labels = labels[0, 1:]
 
 print(labels)
 
-# print(csvData.shape)
+print(csvData.shape)
 
 # filter data by wing
-filtered = csvData[csvData[:, 1] == 1]
-filtered = filtered[filtered[:, 3] == 1]
+filtered = csvData[csvData[:, 0] == 0]
+filtered = filtered[filtered[:, 1] == 0]
 
-# print(filtered.shape)
+print(filtered.shape)
 
-for j in range(4, 53):
+for j in range(2, 51):
     data = [(filtered[i, j], filtered[i, -1])
             for i in range(filtered.shape[0])]
     data.sort(key=lambda x: x[0])
@@ -35,6 +35,7 @@ for j in range(4, 53):
     plt.title(labels[j])
 
     # plt.show()
+    # create file
 
     if not os.path.exists('plots'):
         os.makedirs('plots')
