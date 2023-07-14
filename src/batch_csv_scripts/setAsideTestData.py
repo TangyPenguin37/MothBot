@@ -52,23 +52,26 @@ def splitData():
 
         testIDs = armTestIDs + hybTestIDs + zeaTestIDs
 
-        with open("data\\split_data\\test_samples.csv", "w", newline='', encoding='UTF8') as testFile:
-            with open("data\\split_data\\train_samples.csv", "w", newline='', encoding='UTF8') as trainFile:
+        with open("data\\split_data\\test_samples.csv",
+                  "w", newline='',
+                  encoding='UTF8') as testFile, open("data\\split_data\\train_samples.csv",
+                                                                 "w", newline='',
+                                                                 encoding='UTF8') as trainFile:
 
-                testWriter = csv.writer(testFile)
-                trainWriter = csv.writer(trainFile)
+            testWriter = csv.writer(testFile)
+            trainWriter = csv.writer(trainFile)
 
-                testWriter.writerow(header)
-                trainWriter.writerow(header)
+            testWriter.writerow(header)
+            trainWriter.writerow(header)
 
-                for row in reader:
-                    # Get the file name of the current row
-                    currentID = row[0][:-6]
+            for row in reader:
+                # Get the file name of the current row
+                currentID = row[0][:-6]
 
-                    if currentID in testIDs:
-                        testWriter.writerow(row)
-                    else:
-                        trainWriter.writerow(row)
+                if currentID in testIDs:
+                    testWriter.writerow(row)
+                else:
+                    trainWriter.writerow(row)
         
 def main():
     splitData()
