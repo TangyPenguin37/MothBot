@@ -1,4 +1,4 @@
-from lda import x, y
+# from lda import x, y
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import StratifiedKFold, train_test_split, cross_val_score
