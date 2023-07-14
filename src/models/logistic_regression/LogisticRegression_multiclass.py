@@ -9,13 +9,12 @@ USE_CROSS_VAL = False
 STRATIFIED = True
 
 suffixes = ["", "_grouped", "_grouped_further"]
+columns = [53, 100, 386]
 
 filepath = os.path.join(
     os.path.dirname(__file__),
     f"../../../data/split_data/train/with_hybrids/train_data_formatted{suffixes[GROUPING_LEVEL]}.csv"
 )
-
-columns = [53, 100, 386]
 
 data = np.loadtxt(filepath,
                   delimiter=',',
