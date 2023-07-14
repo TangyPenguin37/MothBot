@@ -1,10 +1,11 @@
 import os
 import csv
 
-oldCSVFilepath = os.path.join(os.getcwd(), 'data', 'split_data', 'train',
-                              'train_data_formatted_no_hybrids.csv')
-newCSVFilepath = os.path.join(os.getcwd(), 'data', 'split_data', 'train',
-                              'train_data_formatted_no_hybrids_grouped.csv')
+dataFolder = os.path.join(os.getcwd(), 'data', 'split_data', 'train',
+                          'with_hybrids')
+
+oldCSVFilepath = os.path.join(dataFolder, 'train_data_formatted.csv')
+newCSVFilepath = os.path.join(dataFolder, 'train_data_formatted_grouped.csv')
 
 with open(oldCSVFilepath, 'r', encoding='utf-8') as oldCSVFile:
     with open(newCSVFilepath, 'w', encoding='utf-8', newline="") as newCSVFile:
@@ -13,7 +14,7 @@ with open(oldCSVFilepath, 'r', encoding='utf-8') as oldCSVFile:
 
         # remove header row
         headers = rows.pop(0)
-        headers = headers[3:-1]
+        headers = headers[4:-1]
         print(headers)
 
         newHeaders = ['filename', 'location', 'side'
@@ -29,14 +30,14 @@ with open(oldCSVFilepath, 'r', encoding='utf-8') as oldCSVFile:
             if '_v' in filename:
                 continue
 
-            data_d = row_d[3:-1]
+            data_d = row_d[4:-1]
 
             data_v = []
 
             for row_v in rows:
                 if ID in row_v[0] and '_v' in row_v[0] and row_v[1] == row_d[
                         1] and row_v[2] == row_d[2]:
-                    data_v = row_v[3:]
+                    data_v = row_v[4:]
                     break
 
             if data_v == []:
