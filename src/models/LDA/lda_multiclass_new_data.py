@@ -7,12 +7,12 @@ from sklearn.metrics import classification_report
 GROUPING_LEVEL = 1
 
 suffixes = ["", "_grouped", "_grouped_further"]
-columns = [53, 100, 386]
+columns = [45, 84, 322]
 
 filepath = os.path.join(
-    os.path.dirname(__file__), "../../..", "data", "split_data", "train",
-    "without_hybrids",
-    f"train_data_formatted_no_hybrids{suffixes[GROUPING_LEVEL]}.csv")
+    os.path.dirname(__file__),
+    f"../../../data/split_data/train/new_results{suffixes[GROUPING_LEVEL]}.csv"
+)
 
 csvData = np.loadtxt(filepath,
                      delimiter=',',
@@ -21,10 +21,6 @@ csvData = np.loadtxt(filepath,
 
 x, y = np.split(csvData, [-1], 1)  # pylint: disable=unbalanced-tuple-unpacking
 y = y.ravel()
-
-# only take second column for x
-# x = x[:, 2]
-# x = x.reshape(-1, 1)
 
 # split data into train and test sets
 train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.2)
@@ -36,7 +32,8 @@ test_preds = lda.predict(test_x)
 
 scores = classification_report(test_y,
                                test_preds,
-                               target_names=["arm", "zea"],
+                               labels=[0, 1, 2],
+                               target_names=["arm", "hyb", "zea"],
                                digits=3)
 
 print(scores)

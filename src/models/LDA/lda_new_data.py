@@ -7,12 +7,12 @@ from sklearn.metrics import classification_report
 GROUPING_LEVEL = 1
 
 suffixes = ["", "_grouped", "_grouped_further"]
-columns = [53, 100, 386]
+columns = [45, 84, 322]
 
 filepath = os.path.join(
     os.path.dirname(__file__), "../../..", "data", "split_data", "train",
     "without_hybrids",
-    f"train_data_formatted_no_hybrids{suffixes[GROUPING_LEVEL]}.csv")
+    f"new_results_no_hybrids{suffixes[GROUPING_LEVEL]}.csv")
 
 csvData = np.loadtxt(filepath,
                      delimiter=',',
