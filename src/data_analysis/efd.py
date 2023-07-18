@@ -1,5 +1,4 @@
 import os
-import sys
 import csv
 import cv2
 import numpy as np
@@ -15,14 +14,22 @@ def show_image(name, image):
     cv2.namedWindow(name, cv2.WINDOW_NORMAL)
     cv2.imshow(name, image)
     cv2.waitKey(0)
-    
+
+def efd_as_string(filepath, second_biggest=False):
+    coeffs, img = efd(filepath, second_biggest)
+
+    if coeffs is None or img is None:
+        return [""] * 25, None
+
+    return [str(i) for i in coeffs], img
+
 def efd(filepath, second_biggest=False):
     img = cv2.imread(filepath)
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     mask = cv2.inRange(img_hsv, lower, upper)
 
-    show_image('mask', mask)
+    # show_image('mask', mask)
 
     contours = cv2.findContours(mask, cv2.RETR_TREE,
                                 cv2.CHAIN_APPROX_SIMPLE)[0]
@@ -33,11 +40,11 @@ def efd(filepath, second_biggest=False):
 
     if cv2.contourArea(contour) < 20000 or contour is None:
         print("No leaf found!")
-        return None
+        return None, None
 
     cv2.drawContours(img, [contour], -1, (255, 255, 255), -1, cv2.LINE_AA)
 
-    show_image('contours', img)
+    # show_image('contours', img)
 
     efd_coeff = pyefd.elliptic_fourier_descriptors(np.squeeze(contour),
                                                    order=7,
@@ -45,7 +52,7 @@ def efd(filepath, second_biggest=False):
 
     coeffs = efd_coeff.flatten()[3:]  # type: ignore
 
-    return coeffs
+    return coeffs, img
 
 def test():
 
@@ -67,7 +74,7 @@ def main():
 
             filepath = os.path.join(folder, file)
 
-            coeffs = efd(filepath)
+            coeffs, _ = efd(filepath)
 
             if coeffs is None:
                 writer.writerow([file])

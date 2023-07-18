@@ -8,23 +8,36 @@ from sklearn.cluster import KMeans
 TEST_IMAGE = 'data/batch1/split/rear/left/CAM046086_v.jpg'
 
 lower = np.array([0, 0, 0])
-upper = np.array([37, 255, 255])
+upper = np.array([33, 255, 255])
 
 def show_image(name, image):
     cv2.namedWindow(name, cv2.WINDOW_NORMAL)
     cv2.imshow(name, image)
     cv2.waitKey(0)
-    
+
+def get_kmeans_as_string(filepath, n_clusters=4, second_biggest=False):
+    colours, percentages, image = get_kmeans(filepath, n_clusters,
+                                             second_biggest)
+
+    if colours is None or percentages is None:
+        return [""] * (4 * n_clusters), None
+
+    colours /= 255
+
+    return [str(i)
+            for i in np.concatenate((colours.flatten(), percentages))], image
+
 def get_kmeans(filepath, n_clusters=4, second_biggest=False):
+    
     img = cv2.imread(filepath)
 
-    show_image('img', img)
+    # show_image('img', img)
 
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     mask = cv2.inRange(img_hsv, lower, upper)
 
-    show_image('mask', mask)
+    # show_image('mask', mask)
 
     contours = cv2.findContours(mask, cv2.RETR_TREE,
                                 cv2.CHAIN_APPROX_SIMPLE)[0]
@@ -35,7 +48,7 @@ def get_kmeans(filepath, n_clusters=4, second_biggest=False):
 
     if cv2.contourArea(contour) < 20000 or contour is None:
         print("No leaf found!")
-        return None, None
+        return None, None, None
 
     mask = np.zeros_like(mask, dtype=np.uint8)
 
@@ -43,7 +56,7 @@ def get_kmeans(filepath, n_clusters=4, second_biggest=False):
 
     result = cv2.bitwise_and(img, img, mask=mask)
 
-    show_image('result', result)
+    # show_image('result', result)
 
     img_hsv = cv2.cvtColor(result, cv2.COLOR_BGR2HSV)
 
@@ -53,6 +66,9 @@ def get_kmeans(filepath, n_clusters=4, second_biggest=False):
                                 cv2.CHAIN_APPROX_SIMPLE)[0]
 
     result = cv2.bitwise_and(result, result, mask=mask)
+    
+    finalImage = result.copy()
+
     result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
     result = result.reshape((result.shape[0] * result.shape[1], 3))
     result = result[result.sum(axis=1) > 0]
@@ -64,13 +80,13 @@ def get_kmeans(filepath, n_clusters=4, second_biggest=False):
 
     percentages = np.bincount(kmeans.labels_) / kmeans.labels_.shape[0]
 
-    print(percentages)
-    print(colours)
+    # print(percentages)
+    # print(colours)
 
-    return colours, percentages
+    return colours, percentages, finalImage
 
 def test():
-    test_colours, test_percentages = get_kmeans(TEST_IMAGE)
+    test_colours, test_percentages, _ = get_kmeans(TEST_IMAGE)
 
     if test_colours is None or test_percentages is None:
         return
@@ -108,7 +124,7 @@ def main():
         for file in tqdm(files):
             filepath = os.path.join(folder, file)
 
-            colours, percentages = get_kmeans(filepath)
+            colours, percentages, _ = get_kmeans(filepath)
 
             if colours is None or percentages is None:
                 writer.writerow([file])
@@ -120,4 +136,6 @@ def main():
             writer.writerow(row)
 
 if __name__ == "__main__":
-    main()
+    # main()
+
+    print(get_kmeans_as_string(r"C:\Users\samue\OneDrive - University of Cambridge\Summer Research Project\data\split_data\train\images\batch2\split_fixed\front\left\CAM046018_d.JPG"))

@@ -1,11 +1,10 @@
 import os
 import csv
 
-dataFolder = os.path.join(os.getcwd(), 'data', 'split_data', 'train',
-                          'with_hybrids')
+dataFolder = os.path.join(os.getcwd(), 'data', 'split_data', 'train', 'without_hybrids')
 
-oldCSVFilepath = os.path.join(dataFolder, 'train_data_formatted_grouped.csv')
-newCSVFilepath = os.path.join(dataFolder, 'train_data_formatted_grouped_further.csv')
+oldCSVFilepath = os.path.join(dataFolder, 'new_results_no_hybrids_grouped.csv')
+newCSVFilepath = os.path.join(dataFolder, 'new_results_no_hybrids_grouped_further.csv')
 
 with open(oldCSVFilepath, 'r', encoding='utf-8') as oldCSVFile:
     with open(newCSVFilepath, 'w', encoding='utf-8', newline="") as newCSVFile:
