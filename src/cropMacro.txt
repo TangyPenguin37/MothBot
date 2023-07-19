@@ -1,0 +1,22 @@
+// initial labelled data
+/ top right
+/ makeRectangle(2564, 0, 2604, 1472);
+
+/ top left
+/ makeRectangle(0, 8, 2460, 1548);
+
+/ bottom right
+/ makeRectangle(2580, 1620, 2552, 612);
+
+/ bottom left
+/ makeRectangle(8, 1680, 2508, 780);
+run("Crop");
+
+
+// unlabelled data
+// front left
+makeRectangle(708, 224, 1812, 1236);
+
+// batch2
+// front left
+makeRectangle(292, 584, 1880, 936);

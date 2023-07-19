@@ -12,17 +12,6 @@ dataRoot = os.path.join(os.path.dirname(__file__), "..", "..", "data",
 oldCSVFilepath = os.path.join(dataRoot, "train_data_formatted_all.csv")
 csvFilepath = os.path.join(dataRoot, "new_results_2.csv")
 
-# batchFolders = [
-#     os.path.join(dataRoot, "images", f"batch{i}", "orig") for i in range(1, 3)
-# ]
-
-# def get_batch_IDs(batch_number):
-#     return os.listdir(os.path.join(dataRoot, "images", f"batch{batch_number}",
-#                                    "orig"))
-
-# batch1 = set(map(lambda x: x[:-6], get_batch_IDs(1)))
-# batch2 = set(map(lambda x: x[:-6], get_batch_IDs(2)))
-
 batch1, batch2 = [
     set(
         map(lambda x: x[:-6],
