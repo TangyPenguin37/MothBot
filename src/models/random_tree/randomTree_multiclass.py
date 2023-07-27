@@ -11,7 +11,7 @@ suffixes = ["", "_grouped", "_grouped_further"]
 
 filepath = os.path.join(
     os.path.dirname(__file__), "..", "..", "..", "data", "split_data", "train",
-    "without_hybrids", f"new_results_no_hybrids{suffixes[GROUPING_LEVEL]}.csv")
+    "with_hybrids", f"new_results{suffixes[GROUPING_LEVEL]}.csv")
 
 with open(filepath, 'r', newline='', encoding='UTF8') as csvFile:
     columns = len(csvFile.readline().split(','))
@@ -24,10 +24,7 @@ data = np.loadtxt(filepath,
 x = data[:, :-1]
 y = data[:, -1]
 
-train_x, test_x, train_y, test_y = train_test_split(x,
-                                                    y,
-                                                    test_size=0.2,
-                                                    stratify=y)
+train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.2, stratify=y)
 
 model = RandomForestClassifier()
 
@@ -53,8 +50,8 @@ else:
 
     scores = classification_report(test_y,
                                    test_preds,
-                                   labels=[0, 1],
-                                   target_names=["arm", "zea"],
+                                   labels=[0, 1, 2],
+                                   target_names=["arm", "hyb", "zea"],
                                    digits=3)
 
     print(scores)
