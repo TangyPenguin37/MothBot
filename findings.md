@@ -1,5 +1,9 @@
 # Findings (so far)
 
+Attemped removing some columns to see if they were useful or not. Also tried grouping the wings together to see if that would help.
+
+The numbers show the average accuracy of the model over 1000 runs (or where there are 2 numbers, I ran the model another 1000 times for no reason other than to see if the results were consistent).
+
 ## Only using one set of common measurements (Grouping: 1)
 
 ### LDA

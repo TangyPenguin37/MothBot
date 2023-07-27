@@ -1,3 +1,5 @@
+### Just a test file to find a good threshold for separating the wings from the background ###
+
 import os
 import cv2
 import numpy as np

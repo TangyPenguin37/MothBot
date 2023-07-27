@@ -1,3 +1,5 @@
+### Attempted under- and over-sampling of majority arm class to rectify class imbalance and improve zea precision and recall ###
+
 import os
 import numpy as np
 import imblearn

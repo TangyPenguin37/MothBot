@@ -1,3 +1,5 @@
+### Attempted filtering the data points by wing, as well as removing certain columns to avoid pseudo-replication, to see if this would cause any effects, although all changes found were negligible. ###
+
 import os
 import numpy as np
 from tqdm import trange

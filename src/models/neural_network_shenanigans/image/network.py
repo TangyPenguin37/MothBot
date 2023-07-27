@@ -1,3 +1,5 @@
+### Neural network for classifying arm, hybrid, and zea using the images themselves ###
+
 import os
 import csv
 import numpy as np

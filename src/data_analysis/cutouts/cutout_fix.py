@@ -1,3 +1,5 @@
+### Fixes the cutouts that were not cut out properly initially ###
+
 import os
 import cv2
 import numpy as np

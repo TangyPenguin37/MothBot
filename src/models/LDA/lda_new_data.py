@@ -1,3 +1,5 @@
+### LDA using the new (slightly different) data from the Python scripts rather than the original data from the ImageJ macros ###
+
 import os
 import numpy as np
 from tqdm import trange

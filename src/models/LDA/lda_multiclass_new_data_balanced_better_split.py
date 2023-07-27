@@ -1,3 +1,5 @@
+### Attempted both splitting into test and train sets by ID, as well as balancing the data by oversampling the minority classes, although this worsened the results, likely as the inclusion of hybrids lessened the imbalance in the data. ###
+
 import os
 import numpy as np
 import imblearn

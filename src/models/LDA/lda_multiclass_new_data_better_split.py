@@ -1,3 +1,5 @@
+### Attempted splitting data into train and test sets by ID instead of by image, so that different images from the same individual are not in both the train and test sets. ###
+
 import os
 import numpy as np
 from tqdm import trange

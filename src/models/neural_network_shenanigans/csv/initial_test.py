@@ -1,3 +1,5 @@
+### Just a proof of concept to see if I can figure out what I'm doing! ###
+
 import tensorflow as tf
 import pandas as pd
 import numpy as np

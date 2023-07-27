@@ -1,3 +1,5 @@
+### Neural network for classifying arm, hybrid, and zea using the extracted features from the images ###
+
 import pandas as pd
 import tensorflow as tf
 
