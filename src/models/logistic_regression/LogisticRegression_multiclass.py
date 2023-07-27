@@ -7,19 +7,25 @@ from sklearn.model_selection import StratifiedKFold, KFold, train_test_split, cr
 GROUPING_LEVEL = 1
 USE_CROSS_VAL = False
 STRATIFIED = True
+EXCLUDED_COLUMNS = ["filename"]
 
 suffixes = ["", "_grouped", "_grouped_further"]
-columns = [53, 100, 386]
 
 filepath = os.path.join(
     os.path.dirname(__file__),
     f"../../../data/split_data/train/with_hybrids/train_data_formatted{suffixes[GROUPING_LEVEL]}.csv"
 )
 
-data = np.loadtxt(filepath,
-                  delimiter=',',
-                  skiprows=1,
-                  usecols=range(1, columns[GROUPING_LEVEL]))
+with open(filepath, 'r', newline='', encoding='UTF8') as csvFile:
+    headers = csvFile.readline().split(',')
+
+columns = [
+    i for i, header in enumerate(headers) if header not in EXCLUDED_COLUMNS
+]
+
+assert len(columns) == len(headers) - len(EXCLUDED_COLUMNS)
+
+data = np.loadtxt(filepath, delimiter=',', skiprows=1, usecols=columns)
 
 x = data[:, :-1]
 y = data[:, -1]
@@ -44,7 +50,10 @@ if USE_CROSS_VAL:
 
 else:
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
+    x_train, x_test, y_train, y_test = train_test_split(x,
+                                                        y,
+                                                        test_size=0.2,
+                                                        stratify=y)
 
     # define and fit model
     model = LogisticRegression(max_iter=10000, multi_class="multinomial")
