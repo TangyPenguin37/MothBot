@@ -15,7 +15,7 @@ def show_image(name, image):
     cv2.imshow(name, image)
     cv2.waitKey(0)
 
-def get_kmeans_as_string(filepath, n_clusters=4, second_biggest=False):
+def get_kmeans_as_string(filepath, n_clusters=2, second_biggest=False):
     colours, percentages, image = get_kmeans(filepath, n_clusters,
                                              second_biggest)
 
@@ -27,7 +27,7 @@ def get_kmeans_as_string(filepath, n_clusters=4, second_biggest=False):
     return [str(i)
             for i in np.concatenate((colours.flatten(), percentages))], image
 
-def get_kmeans(filepath, n_clusters=4, second_biggest=False):
+def get_kmeans(filepath, n_clusters=2, second_biggest=False):
     
     img = cv2.imread(filepath)
 
