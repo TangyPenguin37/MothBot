@@ -6,8 +6,8 @@ dataFolder = os.path.join(os.getcwd(), 'data', 'split_data', 'train', 'without_h
 oldCSVFilepath = os.path.join(dataFolder, 'new_results_no_hybrids.csv')
 newCSVFilepath = os.path.join(dataFolder, 'new_results_no_hybrids_grouped.csv')
 
-with open(oldCSVFilepath, 'r', encoding='utf-8') as oldCSVFile:
-    with open(newCSVFilepath, 'w', encoding='utf-8', newline="") as newCSVFile:
+with open(oldCSVFilepath, 'r', encoding='UTF8') as oldCSVFile:
+    with open(newCSVFilepath, 'w', encoding='UTF8', newline="") as newCSVFile:
         rows = list(csv.reader(oldCSVFile, delimiter=','))
         writer = csv.writer(newCSVFile, delimiter=',')
 

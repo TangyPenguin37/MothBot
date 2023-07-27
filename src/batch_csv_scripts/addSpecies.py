@@ -7,15 +7,15 @@ infoCSV = os.path.join(root, "all_info.csv")
 dataCSV = os.path.join(root, "batch2", "data_all.csv")
 newCSV = os.path.join(root, "batch2", "data_all_w_species.csv")
 
-with open(infoCSV, "r", encoding='utf-8') as info_file:
+with open(infoCSV, "r", encoding='UTF8') as info_file:
     info_reader = csv.reader(info_file, delimiter=",")
     info = list(info_reader)
 
-with open(dataCSV, "r", encoding='utf-8') as data_file:
+with open(dataCSV, "r", encoding='UTF8') as data_file:
     data_reader = csv.reader(data_file, delimiter=",")
     data = list(data_reader)
 
-with open(newCSV, "w", encoding='utf-8', newline="") as new_file:
+with open(newCSV, "w", encoding='UTF8', newline="") as new_file:
     new_writer = csv.writer(new_file, delimiter=",")
     new_writer.writerow(data[0] + ["species"])
     for row in data[1:]:

@@ -20,7 +20,7 @@ labels, centers, inertia, n_iter = kmeans_clustering(csvData, n_clusters=2)
 # print(labels.shape)
 print(centers)
 
-with open('temp.csv', 'w', newline='', encoding='utf-8') as csvfile:
+with open('temp.csv', 'w', newline='', encoding='UTF8') as csvfile:
     writer = csv.writer(csvfile, delimiter=',')
     writer.writerow(centers[0])
     writer.writerow(centers[1])

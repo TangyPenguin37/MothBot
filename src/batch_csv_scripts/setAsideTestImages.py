@@ -15,13 +15,13 @@ testCSVFilepath = os.path.join(testDataFilepath, "test_data_formatted.csv")
 imagesFilepath = os.path.join(trainDataFilepath, "images")
 
 def getTrainIDs():
-    with open(trainCSVFilepath, "r", encoding='utf-8') as trainCSV:
+    with open(trainCSVFilepath, "r", encoding='UTF8') as trainCSV:
         trainReader = csv.reader(trainCSV)
         next(trainReader)  # skip header
         return set(row[0][:-6] for row in trainReader)
 
 def getTestIDs():
-    with open(testCSVFilepath, "r", encoding='utf-8') as testCSV:
+    with open(testCSVFilepath, "r", encoding='UTF8') as testCSV:
         testReader = csv.reader(testCSV)
         next(testReader)  # skip header
         return set(row[0][:-6] for row in testReader)

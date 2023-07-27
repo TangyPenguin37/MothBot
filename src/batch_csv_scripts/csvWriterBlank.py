@@ -11,7 +11,7 @@ files = os.listdir(folder)
 
 # print(files)
 
-with open(csvPath, "w", encoding='utf-8', newline="") as csv_file:
+with open(csvPath, "w", encoding='UTF8', newline="") as csv_file:
     csv_writer = csv.writer(csv_file, delimiter=",")
     csv_writer.writerow([
         "filename", "location", "side", "area", "major", "minor", "circ.",
