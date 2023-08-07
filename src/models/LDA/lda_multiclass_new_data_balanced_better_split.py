@@ -65,7 +65,7 @@ def split_data(test_size=0.2):
     test_y = np.array(test_y)
 
     assert len(train_x) == len(train_y)
-    assert len(test_x) == len(test_y) 
+    assert len(test_x) == len(test_y)
 
     assert len(train_x) + len(test_x) == len(csvData)
     assert len(train_y) + len(test_y) == len(csvData)
@@ -76,7 +76,11 @@ def split_data(test_size=0.2):
     test_x = test_x[:, 1:]
     train_x = train_x[:, 1:]
 
-    train_x, train_y = imblearn.over_sampling.SMOTE().fit_resample(train_x, train_y) # type: ignore
+    train_x, train_y = imblearn.over_sampling.SMOTE(  # type: ignore
+    ).fit_resample(train_x, train_y)
+
+    test_x, test_y = imblearn.over_sampling.SMOTE(  # type: ignore
+    ).fit_resample(test_x, test_y)
 
     return train_x, test_x, train_y, test_y
 
@@ -105,7 +109,7 @@ def run(print_report=False):
     train_x, test_x, train_y, test_y = split_data()
 
     lda = LinearDiscriminantAnalysis(n_components=1)
-    lda.fit(train_x, train_y) # type: ignore
+    lda.fit(train_x, train_y)  # type: ignore
 
     if print_report:
         print(
@@ -115,7 +119,7 @@ def run(print_report=False):
                                   target_names=["arm", "hyb", "zea"],
                                   digits=3))
 
-    return lda.score(test_x, test_y)
+    return lda.score(test_x, test_y) # type: ignore
 
 def measure_accuracy():
     accuracy = []
@@ -125,5 +129,5 @@ def measure_accuracy():
     print(f"Accuracy: {np.mean(accuracy)}")
 
 if __name__ == "__main__":
-    
+
     run(print_report=True)

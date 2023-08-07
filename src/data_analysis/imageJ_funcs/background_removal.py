@@ -1,7 +1,7 @@
 from rembg import remove
 import cv2
 
-TEST_IMAGE = 'data/test_images/test2.jpg'
+TEST_IMAGE = 'data/sample_test_images/test2.jpg'
 
 def show_image(name, image):
     cv2.namedWindow(name, cv2.WINDOW_NORMAL)
