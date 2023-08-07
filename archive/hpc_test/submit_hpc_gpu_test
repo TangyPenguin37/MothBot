@@ -1,0 +1,21 @@
+#!/bin/bash
+#SBATCH --job-name=mothbot
+#SBATCH --output=test.out
+#SBATCH --error=test.err
+#SBATCH --account JIGGINS-SL3-GPU
+#SBATCH --partition ampere
+#SBATCH -t 00:10:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gres=gpu:1
+#SBATCH --mail-type=ALL
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel8/default-gpu
+module unload cuda/11.4
+module unload cuda/11.4.0/gcc-9.4.0-3hnxhjt
+module load python/3.8 cuda/11.2 cudnn/8.1_cuda-11.2
+
+source ./python_env/bin/activate
+python ./hpc_gpu_test.py
