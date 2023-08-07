@@ -8,11 +8,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
 GROUPING_LEVEL = 1
-EXCLUDED_COLUMNS = ["filename"] \
-    + [
-    f"{i}_d"
+EXCLUDED_COLUMNS = ["filename"] + ["location"] + ["side"] + [
+    f"{i}_{j}"
     for i in ["area", "major", "minor", "circ", "feret", "minferet", "ar"]
-] + [f"efd_{i}_{j}" for i in range(25) for j in ["d", "v"]] + ["ar_v"]
+    for j in ["d", "v"]
+] + [f"efd_{i}_{j}" for i in range(25) for j in ["d", "v"]] + [
+    f"colour_{i}_{j}_{k}" for i in range(2) for j in ["r", "g", "b"]
+    for k in ["d", "v"]
+] + [f"percentage_{i}_{j}" for i in range(2) for j in ["d", "v"]]
 
 suffixes = ["", "_grouped", "_grouped_further"]
 
@@ -32,7 +35,7 @@ assert len(columns) == len(headers) - len(EXCLUDED_COLUMNS)
 
 csvData = np.loadtxt(filepath, delimiter=',', skiprows=1, usecols=columns)
 
-csvData = csvData[csvData[:, 0] == 1]
+# csvData = csvData[csvData[:, 0] == 1]
 # csvData = csvData[csvData[:, 1] == 0]
 
 x, y = np.split(csvData, [-1], 1)  # pylint: disable=unbalanced-tuple-unpacking

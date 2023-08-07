@@ -1,4 +1,5 @@
-### Attempted under- and over-sampling classes to rectify class imbalance and improve zea precision and recall ###
+### Attempted under- and over-sampling classes in the validation set only to rectify class imbalance and improve zea precision and recall ###
+### 70-80% accuracy, 70-80% precision, 70-80% recall - good precision for zea and recall for arm ###
 
 import os
 import numpy as np
@@ -27,7 +28,7 @@ columns = [
 assert headers.index("species\r\n") in columns
 assert len(columns) == len(headers) - len(EXCLUDED_COLUMNS)
 
-def load_data(arm_balance=None, balance_train_only=False, test_size=0.2):
+def load_data(arm_balance=None, test_size=0.2):
     csvData = np.loadtxt(filepath, delimiter=',', skiprows=1, usecols=columns)
 
     x, y = np.split(csvData, [-1], 1)  # pylint: disable=unbalanced-tuple-unpacking
@@ -39,38 +40,33 @@ def load_data(arm_balance=None, balance_train_only=False, test_size=0.2):
     if not isinstance(arm_balance, float):
         raise TypeError("arm_balance must be a float")
 
-    if balance_train_only:
-        x_train, x_test, y_train, y_test = train_test_split(
-            x, y, test_size=test_size, stratify=y)
-        # x_train, y_train = balance(x_train, y_train, arm_balance)
-        x_train, y_train = imblearn.over_sampling.SMOTE(  # type: ignore
-        ).fit_resample(x_train, y_train)
-        return x_train, x_test, y_train, y_test
+    x_train, x_test, y_train, y_test = train_test_split(x,
+                                                        y,
+                                                        test_size=test_size,
+                                                        stratify=y)
 
-    # x, y = balance(x, y, arm_balance)
-    x, y = imblearn.over_sampling.SMOTE().fit_resample(x, y)  # type: ignore
+    x_test, y_test = imblearn.over_sampling.SMOTE(  # type: ignore
+    ).fit_resample(x_test, y_test)
 
-    return train_test_split(x, y, test_size=test_size, stratify=y)
+    return x_train, x_test, y_train, y_test
 
-def balance(x, y, arm_split):
+# def balance(x, y, arm_split):
 
-    y = y.astype(int)
+#     y = y.astype(int)
 
-    arm_count, zea_count = np.bincount(y)
-    min_count = min(arm_count, zea_count)
+#     arm_count, zea_count = np.bincount(y)
+#     min_count = min(arm_count, zea_count)
 
-    arm_indices = np.random.choice(np.where(y == 0)[0],
-                                   int(min_count * arm_split * 2),
-                                   replace=False)
-    zea_indices = np.random.choice(np.where(y == 1)[0],
-                                   int(min_count * (1 - arm_split) * 2),
-                                   replace=False)
+#     arm_indices = np.random.choice(np.where(y == 0)[0],
+#                                    int(min_count * arm_split * 2),
+#                                    replace=False)
+#     zea_indices = np.random.choice(np.where(y == 1)[0],
+#                                    int(min_count * (1 - arm_split) * 2),
+#                                    replace=False)
 
-    indices = np.concatenate((arm_indices, zea_indices))
+#     indices = np.concatenate((arm_indices, zea_indices))
 
-    print(len(indices))
-
-    return x[indices], y[indices]
+#     return x[indices], y[indices]
 
 def run(train_x, test_x, train_y, test_y, print_report=False):
 
@@ -87,7 +83,7 @@ def run(train_x, test_x, train_y, test_y, print_report=False):
     return lda.score(test_x, test_y)
 
 if __name__ == "__main__":
-    data = load_data(arm_balance=0.5, balance_train_only=False)
+    data = load_data(arm_balance=0.5)
     run(*data, print_report=True)
     # accuracy = []
     # for _ in trange(1000):
