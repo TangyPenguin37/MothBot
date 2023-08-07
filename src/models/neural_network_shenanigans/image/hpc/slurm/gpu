@@ -1,0 +1,20 @@
+#!/bin/bash
+#SBATCH --job-name=mothbot
+#SBATCH --output=mothbot.out
+#SBATCH --error=mothbot.err
+#SBATCH --account JIGGINS-SL3-GPU
+#SBATCH --partition ampere
+#SBATCH -t 00:10:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gres=gpu:1
+#SBATCH --mail-type=ALL
+
+. /etc/profile.d/modules.sh
+module purge
+module load python/3.8 cuda/11.2 cudnn/8.1_cuda-11.2
+
+export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/software/cuda/10.0
+
+source ./python_env/bin/activate
+python ./network.py
