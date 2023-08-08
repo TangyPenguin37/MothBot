@@ -34,7 +34,6 @@ def load_data():
             'species_0': 'arm',
             'species_1': 'hyb',
             'species_2': 'zea'
-            # 'species_1': 'zea'
         })
 
     # change filename to ID
@@ -43,9 +42,6 @@ def load_data():
 
     unnormalized_cols = list(
         filter(lambda x: df[x].max() > 1 or df[x].min() < 0, df.columns))
-
-    df[unnormalized_cols] = df[unnormalized_cols].apply(
-        lambda x: (x - x.mean()) / x.std())
 
     # split data by ID
 
@@ -62,6 +58,27 @@ def load_data():
     train_df = df[df['ID'].isin(train_IDs['ID'])].drop(['ID'], axis=1)
     val_df = df[df['ID'].isin(val_IDs['ID'])].drop(['ID'], axis=1)
     test_df = df[df['ID'].isin(test_IDs['ID'])].drop(['ID'], axis=1)
+
+    unnormalized_cols = list(
+        filter(lambda x: train_df[x].max() > 1 or train_df[x].min() < 0,
+               train_df.columns))
+
+    train_df_min = train_df[unnormalized_cols].min()
+    train_df_max = train_df[unnormalized_cols].max()
+
+    train_df[unnormalized_cols] = train_df[unnormalized_cols].apply(
+        lambda x: (x - x.min()) / (x.max() - x.min()))
+
+    for col in unnormalized_cols:
+        val_df[col] = (val_df[col] - train_df_min[col]) / (train_df_max[col] -
+                                                           train_df_min[col])
+        test_df[col] = (test_df[col] - train_df_min[col]) / (
+            train_df_max[col] - train_df_min[col])
+
+        # print("\n")
+        # print(col)
+        # print(val_df[col].min(), val_df[col].max())
+        # print(test_df[col].min(), test_df[col].max())
 
     return (train_df.drop(['arm', 'hyb', 'zea'],
                           axis=1), val_df.drop(['arm', 'hyb', 'zea'], axis=1),
@@ -105,7 +122,7 @@ def train_test_model(X_train,
                                              min_lr=0)
     ]
 
-    modelLayers = [
+    model = Sequential([
         layers.Dense(10, activation='tanh', input_shape=(X_train.shape[1], )),
         # layers.Dropout(0.2),
         # layers.Dense(20, activation='relu'),
@@ -113,9 +130,7 @@ def train_test_model(X_train,
         # layers.Dense(10, activation='relu'),
         # layers.Dense(10, activation='relu'),
         layers.Dense(3)
-    ]
-
-    model = Sequential(modelLayers)
+    ])
 
     model.compile(
         optimizer=tf.keras.optimizers.RMSprop(),
@@ -147,7 +162,10 @@ def train_test_model(X_train,
 
     if verbose:
         # print(confusion_matrix(y_test, y_pred))
-        print(classification_report(y_test, y_pred))
+        print(
+            classification_report(y_test,
+                                  y_pred,
+                                  target_names=['arm', 'hyb', 'zea']))
 
     # print(model.weights)
 
@@ -180,7 +198,7 @@ def train_test_model(X_train,
         plt.plot(epochs_range, val_loss, label='Validation Loss')
         plt.legend(loc='upper right')
         plt.title('Training and Validation Loss')
-    #     plt.show()
+        plt.show()
 
     return test_acc
 
@@ -194,5 +212,5 @@ def main():
     print(f'Average accuracy: {np.mean(accuracy)}')
 
 if __name__ == '__main__':
-    # train_test_model(*load_data())
-    main()
+    train_test_model(*load_data())
+    # main()
