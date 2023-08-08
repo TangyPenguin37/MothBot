@@ -1,18 +1,18 @@
 ### Neural network for classifying arm, hybrid, and zea using the extracted features from the images ###
 
-import os
 import datetime
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-from pathlib import Path
 from keras import layers
 from keras.models import Sequential
 from tqdm import trange
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report
 
 BATCH_SIZE = 16
 
@@ -41,14 +41,11 @@ def load_data():
     df['ID'] = df['filename'].apply(lambda x: int(x.replace('CAM', '')))
     df = df.drop(columns=['filename'], inplace=False).astype('float64')
 
-    normalized_cols = ["location", "side", "circ_d", "circ_v", "species"] + [
-        f"colour_{i}_{j}_{k}" for i in range(2) for j in ["r", "g", "b"]
-        for k in ["d", "v"]
-    ] + [f"percentage_{i}_{j}" for i in range(2) for j in ["d", "v"]]
+    unnormalized_cols = list(
+        filter(lambda x: df[x].max() > 1 or df[x].min() < 0, df.columns))
 
-    # normalise columns not in normalized_cols
-    df[df.columns.difference(normalized_cols)] = df[df.columns.difference(
-        normalized_cols)].apply(lambda x: (x - x.min()) / (x.max() - x.min()))
+    df[unnormalized_cols] = df[unnormalized_cols].apply(
+        lambda x: (x - x.mean()) / x.std())
 
     # split data by ID
 
@@ -77,16 +74,13 @@ def load_data():
     # y_train = train_df[['arm', 'zea']]
     # y_test = test_df[['arm', 'zea']]
 
-# log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-
-callbacks = [
-    tf.keras.callbacks.EarlyStopping(monitor='val_loss',
-                                     patience=50,
-                                     restore_best_weights=True),
-    # tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
-]
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
 epochs = 2000
+
+# TODO: add boosting
+# DROPOUT: worse
+# GRADIENT CLIPPING: worse
 
 def train_test_model(X_train,
                      X_val,
@@ -95,17 +89,37 @@ def train_test_model(X_train,
                      y_val,
                      y_test,
                      verbose=True):
-    model = Sequential([
-        layers.Dense(10, activation='tanh'),
+
+    callbacks = [
+        # tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1),
+        tf.keras.callbacks.EarlyStopping(monitor='val_loss',
+                                         patience=200,
+                                         restore_best_weights=True),
+        tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss',
+                                             factor=0.33,
+                                             patience=50,
+                                             verbose=1 if verbose else 0,
+                                             mode='auto',
+                                             min_delta=0.0001,
+                                             cooldown=0,
+                                             min_lr=0)
+    ]
+
+    modelLayers = [
+        layers.Dense(10, activation='tanh', input_shape=(X_train.shape[1], )),
+        # layers.Dropout(0.2),
         # layers.Dense(20, activation='relu'),
         # layers.Dense(10, activation='relu'),
         # layers.Dense(10, activation='relu'),
         # layers.Dense(10, activation='relu'),
         layers.Dense(3)
-    ])
+    ]
+
+    model = Sequential(modelLayers)
 
     model.compile(
         optimizer=tf.keras.optimizers.RMSprop(),
+        # optimizer=tf.keras.optimizers.RMSprop(clipvalue=1.0),
         loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
         metrics=['accuracy'])
 
@@ -152,9 +166,8 @@ def train_test_model(X_train,
     loss = history.history['loss']
     val_loss = history.history['val_loss']
 
-    epochs_range = range(len(acc))
-
     if verbose:
+        epochs_range = range(len(acc))
         plt.figure(figsize=(8, 8))
         plt.subplot(1, 2, 1)
         plt.plot(epochs_range, acc, label='Training Accuracy')
@@ -167,18 +180,18 @@ def train_test_model(X_train,
         plt.plot(epochs_range, val_loss, label='Validation Loss')
         plt.legend(loc='upper right')
         plt.title('Training and Validation Loss')
-        plt.show()
+    #     plt.show()
 
     return test_acc
 
 def main():
     accuracy = []
 
-    for _ in trange(100):
+    for _ in trange(10):
         test_acc = train_test_model(*load_data(), verbose=False)
         accuracy.append(test_acc)
 
-    print(f'Average accuracy: {sum(accuracy) / len(accuracy)}')
+    print(f'Average accuracy: {np.mean(accuracy)}')
 
 if __name__ == '__main__':
     # train_test_model(*load_data())
