@@ -1,4 +1,4 @@
-### using LDA with a balanced dataset to determine the most important features ###
+""" using LDA with a balanced dataset to determine the most important features """
 
 import os
 import numpy as np

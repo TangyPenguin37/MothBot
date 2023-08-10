@@ -1,4 +1,4 @@
-### Crops images to the bounding box of the wing and removes the background ###
+""" Crops images to the bounding box of the wing and removes the background """
 
 import os
 import cv2

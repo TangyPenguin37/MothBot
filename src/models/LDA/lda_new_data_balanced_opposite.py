@@ -1,5 +1,5 @@
-### Attempted under- and over-sampling classes in the validation set only to rectify class imbalance and improve zea precision and recall ###
-### 70-80% accuracy, 70-80% precision, 70-80% recall - good precision for zea and recall for arm ###
+""" Attempted under- and over-sampling classes in the validation set only to rectify class imbalance and improve zea precision and recall """
+""" 70-80% accuracy, 70-80% precision, 70-80% recall - good precision for zea and recall for arm """
 
 import os
 import numpy as np

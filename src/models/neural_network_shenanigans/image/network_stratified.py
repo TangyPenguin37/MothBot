@@ -1,4 +1,4 @@
-### Neural network for classifying arm, hybrid, and zea using the images themselves ###
+""" Neural network for classifying arm, hybrid, and zea using the images themselves """
 
 import os
 import csv

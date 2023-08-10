@@ -1,5 +1,5 @@
-### Neural network for classifying arm, hybrid, and zea using the extracted features from the images ###
-### MUCH WORSE ###
+""" Neural network for classifying arm, hybrid, and zea using the extracted features from the images """
+""" MUCH WORSE """
 
 import datetime
 import numpy as np

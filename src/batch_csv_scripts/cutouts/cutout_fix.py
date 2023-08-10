@@ -1,4 +1,4 @@
-### Fixes the cutouts that were not cut out properly initially ###
+""" Fixes the cutouts that were not cut out properly initially """
 
 import os
 import cv2

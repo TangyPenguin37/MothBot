@@ -1,4 +1,4 @@
-### Attempted under- and over-sampling classes to rectify class imbalance and improve zea precision and recall ###
+""" Attempted under- and over-sampling classes to rectify class imbalance and improve zea precision and recall """
 
 import os
 import numpy as np

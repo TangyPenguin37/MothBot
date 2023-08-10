@@ -1,4 +1,4 @@
-### Attempted both splitting into test and train sets by ID, as well as balancing the data by oversampling the minority classes, although this worsened the results, likely as the inclusion of hybrids lessened the imbalance in the data. ###
+""" Attempted both splitting into test and train sets by ID, as well as balancing the data by oversampling the minority classes, although this worsened the results, likely as the inclusion of hybrids lessened the imbalance in the data. """
 
 import os
 import numpy as np
@@ -119,7 +119,7 @@ def run(print_report=False):
                                   target_names=["arm", "hyb", "zea"],
                                   digits=3))
 
-    return lda.score(test_x, test_y) # type: ignore
+    return lda.score(test_x, test_y)  # type: ignore
 
 def measure_accuracy():
     accuracy = []

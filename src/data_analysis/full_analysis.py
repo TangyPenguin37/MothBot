@@ -1,4 +1,4 @@
-### Script to run a full analysis on all images in the dataset, and save the results to a CSV file ###
+""" Script to run a full analysis on all images in the dataset, and save the results to a CSV file """
 
 import os
 import csv
