@@ -5,7 +5,7 @@ import numpy as np
 import pyefd
 from tqdm import tqdm
 
-TEST_IMAGE = 'data/batch1/split/rear/left/CAM046086_v.jpg'
+TEST_IMAGE = 'data/sample_test_images/test3.jpg'
 
 lower = np.array([0, 0, 0])
 upper = np.array([33, 255, 255])
@@ -27,9 +27,11 @@ def efd(filepath, second_biggest=False):
     img = cv2.imread(filepath)
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
+    img_orig = img.copy()
+
     mask = cv2.inRange(img_hsv, lower, upper)
 
-    # show_image('mask', mask)
+    show_image('mask', mask)
 
     contours = cv2.findContours(mask, cv2.RETR_TREE,
                                 cv2.CHAIN_APPROX_SIMPLE)[0]
@@ -44,13 +46,21 @@ def efd(filepath, second_biggest=False):
 
     cv2.drawContours(img, [contour], -1, (255, 255, 255), -1, cv2.LINE_AA)
 
-    # show_image('contours', img)
+    show_image('contours', img)
 
     efd_coeff = pyefd.elliptic_fourier_descriptors(np.squeeze(contour),
                                                    order=7,
                                                    normalize=True)
 
     coeffs = efd_coeff.flatten()[3:]  # type: ignore
+
+    origin = pyefd.calculate_dc_coefficients(np.squeeze(contour))
+
+    pyefd.plot_efd(pyefd.elliptic_fourier_descriptors(np.squeeze(contour),
+                                                      order=7,
+                                                      normalize=False),
+                   image=img_orig,
+                   locus=pyefd.calculate_dc_coefficients(np.squeeze(contour)))
 
     return coeffs, img
 
@@ -83,4 +93,5 @@ def main():
             writer.writerow([file] + coeffs)
 
 if __name__ == '__main__':
-    main()
+    # main()
+    test()

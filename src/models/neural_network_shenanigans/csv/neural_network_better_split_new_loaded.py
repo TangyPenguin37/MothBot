@@ -13,7 +13,7 @@ from keras import layers
 from keras.models import Sequential
 from tqdm import trange
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 
 BATCH_SIZE = 16
 
@@ -109,34 +109,41 @@ def train_test_model(X_train,
                                              min_lr=0)
     ]
 
-    model = Sequential([
-        layers.Dense(10,
-                     activation='sigmoid',
-                     input_shape=(X_train.shape[1], )),
-        layers.Dense(3)
-    ])
+    # model = Sequential([
+    #     layers.Dense(10,
+    #                  activation='sigmoid',
+    #                  input_shape=(X_train.shape[1], )),
+    #     layers.Dense(3)
+    # ])
 
-    model.compile(
-        optimizer=tf.keras.optimizers.RMSprop(),
-        # optimizer=tf.keras.optimizers.RMSprop(clipvalue=1.0),
-        loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
-        metrics=['accuracy'])
+    # model.compile(
+    #     optimizer=tf.keras.optimizers.RMSprop(),
+    #     # optimizer=tf.keras.optimizers.RMSprop(clipvalue=1.0),
+    #     loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+    #     metrics=['accuracy'])
+
+    # load model from file
+    model = tf.keras.models.load_model(
+        Path(__file__).resolve().parent / 'savedModels' /
+        'neural_network_better_split_new' / '20230807-120711_0.863 (BEST).h5')
+
+    # model.summary()
 
     assert not np.any(np.isnan(X_train))
     assert not np.any(np.isnan(y_train))
 
-    history = model.fit(X_train,
-                        y_train,
-                        epochs=epochs,
-                        callbacks=callbacks,
-                        validation_data=(X_val, y_val),
-                        batch_size=None,
-                        validation_batch_size=BATCH_SIZE,
-                        verbose=2 if verbose else 0)  # type: ignore
+    # history = model.fit(X_train,
+    #                     y_train,
+    #                     epochs=epochs,
+    #                     callbacks=callbacks,
+    #                     validation_data=(X_val, y_val),
+    #                     batch_size=None,
+    #                     validation_batch_size=BATCH_SIZE,
+    #                     verbose=2 if verbose else 0)  # type: ignore
 
     test_acc = model.evaluate(X_test, y_test, verbose=0)[1]  # type: ignore
 
-    y_pred = model.predict(X_test,
+    y_pred = model.predict(X_test, # type: ignore
                            batch_size=BATCH_SIZE,
                            verbose=2 if verbose else 0)  # type: ignore
 
@@ -157,44 +164,43 @@ def train_test_model(X_train,
 
     # save model
 
-    model.save(
-        Path(__file__).resolve().parent / 'savedModels' / Path(__file__).stem /
-        f"{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}_{test_acc:.3f}.h5"
-    )
+    # model.save(
+    #     Path(__file__).resolve().parent / 'savedModels' / Path(__file__).stem /
+    #     f"{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}_{test_acc:.3f}.h5"
+    # )
 
-    acc = history.history['accuracy']
-    val_acc = history.history['val_accuracy']
+    # acc = history.history['accuracy']
+    # val_acc = history.history['val_accuracy']
 
-    loss = history.history['loss']
-    val_loss = history.history['val_loss']
+    # loss = history.history['loss']
+    # val_loss = history.history['val_loss']
 
-    if verbose:
-        epochs_range = range(len(acc))
-        plt.figure(figsize=(8, 8))
-        plt.subplot(1, 2, 1)
-        plt.plot(epochs_range, acc, label='Training Accuracy')
-        plt.plot(epochs_range, val_acc, label='Validation Accuracy')
-        plt.legend(loc='lower right')
-        plt.title('Training and Validation Accuracy')
+    # if verbose:
+    #     epochs_range = range(len(acc))
+    #     plt.figure(figsize=(8, 8))
+    #     plt.subplot(1, 2, 1)
+    #     plt.plot(epochs_range, acc, label='Training Accuracy')
+    #     plt.plot(epochs_range, val_acc, label='Validation Accuracy')
+    #     plt.legend(loc='lower right')
+    #     plt.title('Training and Validation Accuracy')
 
-        plt.subplot(1, 2, 2)
-        plt.plot(epochs_range, loss, label='Training Loss')
-        plt.plot(epochs_range, val_loss, label='Validation Loss')
-        plt.legend(loc='upper right')
-        plt.title('Training and Validation Loss')
-        plt.show()
+    #     plt.subplot(1, 2, 2)
+    #     plt.plot(epochs_range, loss, label='Training Loss')
+    #     plt.plot(epochs_range, val_loss, label='Validation Loss')
+    #     plt.legend(loc='upper right')
+    #     plt.title('Training and Validation Loss')
+    #     plt.show()
 
-    return test_acc
+    # return test_acc
+    return confusion_matrix(y_test, y_pred)
 
 def main():
-    accuracy = []
+    confusion_matrices = np.zeros((3, 3))
 
-    for _ in trange(10):
-        test_acc = train_test_model(*load_data(), verbose=False)
-        accuracy.append(test_acc)
+    for _ in trange(100):
+        confusion_matrices += train_test_model(*load_data(), verbose=False)
 
-    print(f"Average Accuracy: {np.mean(accuracy)}")
-    print(f"Standard Deviation: {np.std(accuracy)}")
+    print(confusion_matrices)
 
 if __name__ == '__main__':
     # train_test_model(*load_data())

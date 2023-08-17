@@ -49,8 +49,10 @@ def run(print_report=False):
     return lda.score(test_x, test_y)
 
 if __name__ == "__main__":
-    accuracy = []
-    for _ in trange(100):
-        accuracy.append(run())
+    accuracies = []
+    for _ in trange(1000):
+        accuracies.append(run())
 
-    print(f"Accuracy: {np.mean(accuracy)}")
+    print(f"Average Accuracy: {np.mean(accuracies)}")
+    print(f"Standard Deviation: {np.std(accuracies)}")
+    

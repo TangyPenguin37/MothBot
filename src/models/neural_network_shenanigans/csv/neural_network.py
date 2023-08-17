@@ -3,6 +3,7 @@
 import datetime
 import pandas as pd
 import tensorflow as tf
+import numpy as np
 
 from keras import layers
 from keras.models import Sequential
@@ -156,12 +157,13 @@ def train_test_model(X_train, X_val, X_test, y_train, y_val, y_test):
 def main():
     accuracy = []
 
-    for _ in trange(10):
+    for _ in trange(100):
         test_acc = train_test_model(*load_data())
         accuracy.append(test_acc)
 
-    print(f'Average accuracy: {sum(accuracy) / len(accuracy)}')
+    print(f"Average Accuracy: {np.mean(accuracy)}")
+    print(f"Standard Deviation: {np.std(accuracy)}")
 
 if __name__ == '__main__':
-    train_test_model(*load_data())
-    # main()
+    # train_test_model(*load_data())
+    main()

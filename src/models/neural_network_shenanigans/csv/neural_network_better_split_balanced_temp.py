@@ -183,5 +183,5 @@ def main():
     print(f'Average accuracy: {sum(accuracy) / len(accuracy)}')
 
 if __name__ == '__main__':
-    train_test_model(*load_data())
-    # main()
+    # train_test_model(*load_data())
+    main()

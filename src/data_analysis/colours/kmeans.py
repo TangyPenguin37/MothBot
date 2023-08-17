@@ -5,7 +5,7 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.cluster import KMeans
 
-TEST_IMAGE = 'data/batch1/split/rear/left/CAM046086_v.jpg'
+TEST_IMAGE = 'data/sample_test_images/test3.jpg'
 
 lower = np.array([0, 0, 0])
 upper = np.array([33, 255, 255])
@@ -90,6 +90,8 @@ def test():
 
     if test_colours is None or test_percentages is None:
         return
+    
+    # return test_colours, test_percentages
 
     cumulative = np.cumsum(test_percentages)
     cumulative = np.insert(cumulative, 0, 0)
@@ -102,7 +104,7 @@ def test():
             (int(cumulative[i] * 400), 0, int(cumulative[i + 1] * 400), 100),
             (int(colour[2]), int(colour[1]), int(colour[0])), -1)
 
-    # show_image('rectangles', rectangles)
+    show_image('rectangles', rectangles)
 
 def main():
     cwd = os.getcwd()
@@ -138,4 +140,6 @@ def main():
 if __name__ == "__main__":
     # main()
 
-    print(get_kmeans_as_string(r"C:\Users\samue\OneDrive - University of Cambridge\Summer Research Project\data\split_data\train\images\batch2\split_fixed\front\left\CAM046018_d.JPG"))
+    # print(get_kmeans_as_string(r"C:\Users\samue\OneDrive - University of Cambridge\Summer Research Project\data\split_data\train\images\batch2\split_fixed\front\left\CAM046018_d.JPG"))
+
+    print(test())

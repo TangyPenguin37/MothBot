@@ -5,10 +5,10 @@ import numpy as np
 from tqdm import trange
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 
 GROUPING_LEVEL = 1
-EXCLUDED_COLUMNS = ["filename"]
+EXCLUDED_COLUMNS = ["filename", "location", "side"]
 
 suffixes = ["", "_grouped", "_grouped_further"]
 
@@ -40,21 +40,22 @@ def run(print_report=False):
     lda = LinearDiscriminantAnalysis(n_components=1)
     lda.fit(train_x, train_y)
 
-    if print_report:
-        print(
-            classification_report(test_y,
-                                  lda.predict(test_x),
-                                  labels=[0, 1, 2],
-                                  target_names=["arm", "hyb", "zea"],
-                                  digits=3))
-
+    # return confusion_matrix(test_y, lda.predict(test_x))
     return lda.score(test_x, test_y)
 
 if __name__ == "__main__":
-    # accuracy = []
-    # for _ in trange(1000):
-    #     accuracy.append(run())
+    accuracy = []
+    for _ in trange(1000):
+        accuracy.append(run())
 
-    # print(f"Accuracy: {np.mean(accuracy)}")
+    print(f"Accuracy: {np.mean(accuracy)}")
 
-    run(print_report=True)
+    # run(print_report=True)
+
+# if __name__ == "__main__":
+#     confusion_matrices = np.zeros((3, 3))
+
+#     for _ in trange(1000):
+#         confusion_matrices += run()
+
+#     print(confusion_matrices)

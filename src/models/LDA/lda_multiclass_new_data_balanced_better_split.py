@@ -11,7 +11,7 @@ from sklearn.metrics import classification_report
 # BAD!!!
 
 GROUPING_LEVEL = 1
-EXCLUDED_COLUMNS = []
+EXCLUDED_COLUMNS = ["side", "location"]
 
 suffixes = ["", "_grouped", "_grouped_further"]
 
@@ -49,7 +49,7 @@ def split_data(test_size=0.2):
 
     for i in range(3):
         IDs = set(csvData[csvData[:, -1] == i][:, 0])
-        print(f"Number of {i} samples: {len(IDs)}")
+        # print(f"Number of {i} samples: {len(IDs)}")
 
         train, test = train_test_split(list(IDs), test_size=test_size)
 
@@ -76,10 +76,10 @@ def split_data(test_size=0.2):
     test_x = test_x[:, 1:]
     train_x = train_x[:, 1:]
 
-    train_x, train_y = imblearn.over_sampling.SMOTE(  # type: ignore
+    train_x, train_y = imblearn.under_sampling.RandomUnderSampler(  # type: ignore
     ).fit_resample(train_x, train_y)
 
-    test_x, test_y = imblearn.over_sampling.SMOTE(  # type: ignore
+    test_x, test_y = imblearn.under_sampling.RandomUnderSampler(  # type: ignore
     ).fit_resample(test_x, test_y)
 
     return train_x, test_x, train_y, test_y
@@ -123,11 +123,13 @@ def run(print_report=False):
 
 def measure_accuracy():
     accuracy = []
-    for _ in trange(1000):
+    for _ in trange(100):
         accuracy.append(run())
 
     print(f"Accuracy: {np.mean(accuracy)}")
+    print(f"Standard deviation: {np.std(accuracy)}")
 
 if __name__ == "__main__":
 
-    run(print_report=True)
+    # run(print_report=True)
+    measure_accuracy()
