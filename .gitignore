@@ -7,7 +7,8 @@ data/original_labelled/split
 data/original_labelled/split_corrected
 data/batch1/orig
 data/batch1/split
-data/batch2
+data/batch2/orig
+data/batch2/split
 data/split_data/train/images
 data/split_data/test/images
 hpc_backup_*
