@@ -10,6 +10,7 @@ data/batch1/split
 data/batch2
 data/split_data/train/images
 data/split_data/test/images
+hpc_backup_*
 logs
 plan.txt
 *.pkl
