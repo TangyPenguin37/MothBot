@@ -1,0 +1,11 @@
+              precision    recall  f1-score   support
+
+         arm       0.86      0.95      0.91       170
+         hyb       0.68      0.52      0.59        29
+         zea       0.79      0.50      0.61        30
+
+    accuracy                           0.84       229
+   macro avg       0.78      0.66      0.70       229
+weighted avg       0.83      0.84      0.83       229
+
+neural network w 10 nodes and sigmoid activation

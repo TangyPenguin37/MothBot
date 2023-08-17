@@ -1,0 +1,67 @@
+LR binary
+old data
+Average Accuracy: 0.8667792207792208
+Standard Deviation: 0.010592149194439295
+
+new data
+Average Accuracy: 0.8682961038961039
+Standard Deviation: 0.01013837937643402
+
+LR multiclass
+old data
+Average Accuracy: 0.7656696428571429
+Standard Deviation: 0.011987168282954803
+
+new data
+Average Accuracy: 0.7694285714285714
+Standard Deviation: 0.02917753927571586
+
+0.7611428571428571
+Standard Deviation: 0.026993910457991432
+
+LDA binary
+old data
+Average Accuracy: 0.8927376623376623
+Standard Deviation: 0.012700842952543662
+
+new data
+Average Accuracy: 0.8955012987012987
+Standard Deviation: 0.012850234533903259
+
+LDA multiclass
+old data
+Average Accuracy: 0.7753973214285714
+Standard Deviation: 0.013637482433956774
+
+new data
+Average Accuracy: 0.7782388392857142
+Standard Deviation: 0.013692190445696105
+
+balanced
+Accuracy: 0.5725022464368422
+Standard deviation: 0.034284322368945956
+
+neural network initial
+Average Accuracy: 0.7642857146263122
+Standard Deviation: 0.023067876997029314
+
+neural network refined
+Average Accuracy: 0.7857365190982819
+Standard Deviation: 0.032913705903181885
+
+Average Accuracy: 0.8050197005271912
+Standard Deviation: 0.020512988557578507
+
+balanced
+Average accuracy: 0.6530559659004211
+Standard deviation: 0.06907787519706665
+
+image neural network
+Average Accuracy: 0.718975493311882
+Standard Deviation: 0.021462765542245056
+
+vgg neural network
+Average Accuracy: 0.726057906458797
+Standard Deviation: 3.3306690738754696e-16
+
+TODO: random forest?
