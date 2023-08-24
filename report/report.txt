@@ -1,0 +1,134 @@
+Convolutional Neural Network
+Overview
+Convolutional neural networks are a form of feed-forward neural network specifically designed for using images as inputs. They differ from regular feed-forward in that the input and output to each layer represents a multidimensional matrix (i.e., a tensor) of values. Matrix operations can be performed on the input matrices in combination with filter/kernel matrices, to reduce an input tensor down to matrices of more manageable sizes, without the sheer number of weights and biases that would be required for an equivalent typical feed-forward network. At some point, however, the matrix must be flattened and sent through at least one fully connected layer, such that a one-dimensional output can produced.
+There are several possible layers in a convolutional neural network, described as follows:
+Dense/Fully Connected Layers
+Dense layers are identical to normal hidden layers in a typical one-dimensional feed-forward network, with a given number of nodes for which the weights and biases must be determined through training.
+Normalisation Layers
+These layers simply normalise the input values such that they have a mean of 0 and a standard deviation of 1.
+Rescaling Layers
+These layers simply rescale the input values to a given range by dividing them (e.g., dividing all the potential RGB colour values by 255 from range 0-255 to 0-1)
+Dropout Layers
+Also found in conventional feed-forward networks, these layers simply set random input values to 0 at a given rate to help prevent potential overfitting.
+Flatten Layers
+This layer simply flattens the multidimensional tensor input into a single one-dimensional set of values, such that it can be run through the usual fully connected and dropout layers.
+MaxPooling Layers
+The pooling layers reduce the size of the input matrix by subdividing it into overlapping regions of a given ‘pool’ size that are separated in each dimension by a given ‘stride’ value, and taking the maximum value of each region, as shown here for a 3 x 3 pool and a stride of 2.
+Convolution Layers
+The main type of layer in convolutional neural networks, these have a set of filters/kernels, each of a fixed kernel matrix size. The process undertaken here works similarly to the pooling layers, although rather than taking the maximum value of each region, the dot product of the kernel matrix and region of the input matrix is taken instead. This is repeated for each filter, and the results are stacked together to form the output matrices. The values of the output matrices are then passed through an activation function (ReLU in this case) to introduce non-linearity. This concept of matrix multiplication is shown here.
+Results
+Once again, I tried several different architectures for the convolutional network, eventually settling on the following model:
+Layer	Type	Details	Input Shape	Output Shape
+1	Rescaling	Scales RGB values from 0-255 to 0-1	(256, 256, 3)	(256, 256, 3)
+2	Convolution	96 filters, 11 x 11 kernel, stride 4	(256, 256, 3)	(62, 62, 96)
+3	Normalisation	-	(62, 62, 96)	(62, 62, 96)
+4	MaxPooling	3 x 3 pool, stride 2	(62, 62, 96)	(30, 30, 96)
+5	Convolution	256 filters, 5 x 5 kernel, stride 1	(30, 30, 96)	(26, 26, 256)
+6	Normalisation	-	(26, 26, 256)	(26, 26, 256)
+7	MaxPooling	3 x 3 pool, stride 2	(26, 26, 256)	(12, 12, 256)
+8	Convolution	384 filters, 3 x 3 kernel, stride 1	(12, 12, 256)	(10, 10, 384)
+9	Normalisation	-	(10, 10, 384)	(10, 10, 384)
+10	Convolution	384 filters, 3 x 3 kernel, stride 1	(10, 10, 384)	(8, 8, 384)
+11	Normalisation	-	(8, 8, 384)	(8, 8, 384)
+12	Convolution	256 filters, 3 x 3 kernel, stride 1	(8, 8, 384)	(6, 6, 256)
+13	Normalisation	-	(6, 6, 256)	(6, 6, 256)
+14	MaxPooling	3 x 3 pool, stride 2	(6, 6, 256)	(2, 2, 256)
+15	Flatten	-	(2, 2, 256)	1024
+16	Dense	4096 nodes	1024	4096
+17	Dropout	Rate: 0.5	4096	4096
+18	Dense	4096 nodes	4096	4096
+19	Dropout	Rate: 0.5	4096	4096
+20	Dense	3 nodes	4096	3
+
+As can be seen from layer 1 above, the input images had to be of size 256 x 256, as too large an image resolution would require an extremely complicated network, taking too long to train. This meant resizing the images, for which I used Python to achieve. I had two different methods in mind – first, I simply cropped the image of a wing to a bounding rectangle around the wing, and then resized it to 256 x 256. This had the disadvantage of removing information about the shape of the wing, as resizing a rectangular image to a square image caused distortion. The other method I tried was to take the rectangular image and pad it with black pixels to make it square, and then resize it to 256 x 256. This enabled the network to learn the shape of the wing, but meant that less pixels were dedicated to the wing itself, potentially removing important details. In either case, I removed the background from the images by setting the background pixels to black, to ensure the model would not attempt to use the background as a feature. I settled on using the second option, as I wished to retain information about the shape of the wing. Both methods, however, suffered from the removal of information about the wing's size, as well as information about which wing/side of the wing the image belonged to, and as such, I didn't expect the model to perform as well.
+
+This is exactly what I found - after training the model many times and taking an average, I found an accuracy of 71.898% ± 2.146, far worse than all the other methods attempted so far. Whilst the removal of certain key information was definitely playing a role here, I wished to try a pretrained network, to see how much of the lost performance was due to my specific implementation of a convolutional network. 
+
+Pre-trained Convolutional Neural Network
+Overview
+Pre-trained convolutional neural networks are large convolutional neural networks that have already been pretrained using millions of images from the internet to extract particular features. The theory is that, with enough images of random items, they can mimic the way humans and other animal distinguish and identify objects. Such models, such as the VGG16 model I chose for this project, can be downloaded and then the last few layers fine-tuned to fit the specific use-case.
+
+The VGG16 model was originally designed to be used with the ImageNet database of images - a collection of over 14 million images belonging to more than 20,000 different categories. Specifically, it was designed for the ImageNet Large Scale Visual Recognition Challenge (ILSVRC), an annual competition for machine learning models using a subset of 1,000 categories from the full ImageNet dataset. With this in mind, the model had to be tweaked a little bit for my specific use case, as I was only using 3 categories. Tensorflow conveniantly provides a function to do this - removing the last three layers of the model, such that one can add their own layers to the end of the model. I therefore added a flattening layer, followed by two ReLU dense layers of 4096 and 1072 nodes respectively, a dropout layer of rate 0.2, and the final layer of 3 output nodes.
+
+Results
+Training the model was surprisingly quick, given that most of the weights and biases are fixed in place - the fact that the model was pretrained meant that only the final layers I added needed training. Training the model ended up giving me an accuracy of 72.61% every single time, which was not unexpected. Whilst better than my own convolutional neural network, it was still not as good as the other methods I had tried, suggesting that the loss of information from cropping and resizing the images was a significant factor in the convolutional models' poor performance. This is something that could have potentially be improved upon with more time, but given the time constraints of the project, I decided to move back to my best model so far, the extracted features neural network, to see if I could make some optimisations.
+
+Optimisations
+There were a couple of optimisations I could make to the extracted features neural network, each of which is described below:
+
+Early stopping
+Typically, a neural network model is trained for a set number of epochs, and the total number of epochs is a hyperparameter that can be chosen and tuned by the user. However, early stopping makes use of the validation subset to decide when enough epochs have passed. Specifically, such a technique involves monitoring the error/loss on the validation set after each epoch, and stops training once this error starts increasing. If training were to continue beyond this point, the validation loss would continue to increase, meaning the model is overfitting to specific features of the training set, and rather than generalising well to the validation set or other unseen data. Avoiding this ensures the model is trained for the optimal number of epochs, and no more or less.
+
+Learning rate scheduler
+The learning rate dictates how much the weights and biases are changed after each epoch, and this can once again be tuned by the user as a hyperparameter. A higher learning rate means the model may overshoot the optimal weights and biases values (but could potentially find the optimal values quicker or find an even more optimal set of values), whereas a lower learning rate takes longer to train, but will not overshoot a locally optimal set of values (although it may not find the optimal values at all in the epochs given). Typically, this value is fixed throughout training, but a learning rate scheduler can be used to change the learning rate throughout training, such that it is higher at the start of training, and lower towards the end. This means the model can find the optimal values quickly, and then fine-tune them to be even more optimal in the latter stages. Whilst any learning rate scheduler function could be used, I chose the ReduceLROnPlateau callback in Tensorflow, such that the learning rate would be reduced by a factor of 0.33 after 50 epochs of no improvement in the validation loss.
+
+Dropout
+As previously mentioned, dropout is a technique used to prevent overfitting, where certain input values are set to zero at a given rate when training. The thinking is that there may be mistakes made in previous layers of the model, which are hidden/'neutralised' by the following layers in a way that is specific to the training subset, and so such mistakes are not made apparent. By setting some of the input values to zero, the mistakes may no longer be hidden or the 'corrections' in subsequent layers may be more apparent, and so the model can resolve them accordingly.
+
+Regularization
+Regularization is another technique used to prevent overfitting. It works by adding a 'penalty' term to the loss/error function that is dependent on the weights and biases of the model. This term will increase with higher weights and biases, and so the model will attempt to find an optimal solution, whilst keeping the weights and biases as low as possible. The idea is that an overfitted model will have very high weights and biases, and so the penalty term will avoid this.
+
+The two most common types of regularization are L1 and L2 regularization, which both make use of different penalty terms, and I tried both to see which would work best.
+
+Normalisation
+Certain input values in the extracted features set can in theory hold any value from 0 to infinity (such as area or major/minor axes length) and so the large range may make it difficult for the model to learn any apparent patterns in such features. Normalisation rescales these values to a smaller range (typically 0-1), such that the model can learn patterns more easily. In this case, I rescaled all input features that were not already in the range 0-1 to this range, using the MinMaxScaler function in scikit-learn.
+
+Different architectures
+This technique simply involves changing the number of nodes in the hidden layers, and the number of hidden layers themselves. This step had already been performed in the previous section, and the best architecture found then was kept for this section.
+
+Gradient clipping
+The backpropagation algorithm is used when training a neural network to decide how much the weights and biases should be changed after each epoch. This is done by calculating the gradient of the loss/error function with respect to each of the weights and biases, and then multiplying this by the learning rate to get the change in weights and biases for the next epoch. However, a large gradient may cause the weights and biases to change by a large amount, and thus miss a set of optimal values. Gradient clipping enables one to set a maximum gradient, such that the weights and biases do not change too drastically between epochs.
+
+Results
+I tried each of the above optimisations individually to see which would cause an improvement in performance. I found that the early stopping, a learning rate scheduler, normalisation, and attempting different architectures all caused an improvement in performance. Putting these optimisations together gave an accuracy 80.50% ± 2.05, giving me the best model thus far. Having reached a model with accuracy in excess of 80 percent, I wished to take a look at most relevant features in the dataset, to see which features were most important in distinguishing H. armigera and H. zea moths.
+
+Relevant features
+To determine the most relevant features, I went back to the best LDA model that I had trained (not including hybrids and grouping dorsal/ventral data points together), as the complexity of the neural network made it difficult to determine the individual impact of each feature. I also artificially balanced the dataset (as described in further detail later on) Specifically, I removed all input features from the dataset, and reintroduced them one at a time, training and testing the model each time. After running the models multiple times and averaging the results, I found the 15 most relevant features as follows:
+
+colour_1_g_v: 64.73%
+colour_1_r_v: 62.97%
+colour_1_b_v: 61.83%
+colour_0_g_v: 58.19%
+colour_0_b_v: 57.90%
+minferet_v: 57.00%
+minor_v: 56.98%
+minferet_d: 56.53%
+colour_0_r_v: 56.37%
+minor_d: 55.85%
+area_v: 55.71%
+area_d: 55.40%
+colour_1_g_d: 55.18%
+colour_0_r_d: 55.18%
+colour_1_b_d: 54.65%
+
+In this case, the suffixes _v and _d refer to the ventral and dorsal sides respectively, and the numbers represent the accuracy of the model (from a baseline of 50%). This suggested that colour was by far the most important feature, although different patterns emerged when I ran the same script again for each wing location individually.
+
+Whilst there were unsurprisingly no differences between left and right wings, I found area, feret diameter, and minor axis length to be most important for the front wings, with ventral colour being the most important feature for the rear wings. This was interesting, and gave some insight which could be used to create more specific models for each wing location if I had the time in this project to do so.
+
+In analysing all this data, I stumbled across another issue: class imbalances.
+
+Class Imbalance
+As it turned out, over 72% of all the dataset was made up of H. armigera moths, with the rest being split fairly evenly between H. zea and hybrid moths. This made the accuracy values I had achieved till now seem a lot less impressive. There are two potential baselines when evaluating a model: the zero-weight baseline, which is the accuracy of a model which always predicts the majority class (i.e., 72%); and the random-rate baseline, which is the accuracy of a model that guesses randomly, but in proportion to the class balances (which comes to approximately 56.4% in this case). Whilst my best-performing models beat both of these baselines, it was clear that the class imbalance was having a significant impact on the accuracy values I was achieving, and so the best measure was to artificially balance the dataset.
+
+Balancing the dataset
+The dataset could be balanced by one of two methods: undersampling, where samples from the majority class are removed randomly until the dataset is balanced; or oversampling, where samples from the minority class are duplicated/interpolated until the dataset is balanced. Both seemed to give similar results when tried on my best model so far, the extracted features neural network, coming out to an accuracy of 65.31% ± 6.91, far better than the theoretical zero-weight and random-rate baslines of 33.33% and 32.67% respectively. This suggested that the results I had gathered for the neural network till now were not solely due to the class imbalance, and that the model was indeed learning from the data. It also showcased how accuracy wasn't the best metric of the model's performance, and thus I decided to switch to using precision and recall scores instead.
+
+Confusion Matrices and Precision/Recall
+
+Confusion matrices visualise a model's performance as a table of predicted classes against actual classes, with the values in each cell represent the number of samples that fall into said category. Running the extracted features neural network many times over gave the following confusion matrices:
+
+(INSERT)
+
+Clearly, the original model was incredibly accurate when it came to H. armigera moths, but incredibly poor with hybrid and H. zea species. The balanced model, however, performed well across all classes, especially with zea moths. This performance could be better represented by the precision and recall scores, shown below:
+
+(INSERT)
+
+The precision score represents the accuracy of the model when predicting a given class, and the recall score represents the proportion of samples in a given class that the model correctly predicts. The poor performance of the original model on hybrid and zea moths is clearly shown here, with it only correctly identifying 19.7% of hybrid moths and 48.5% of zea moths. The balanced model, however, achieved much better precision and recall scores across all 3 categories.
+
+This showed how the balance across the dataset could be artificially manipulated to improve the model's performance for specific use-cases. In this case, however, the main aim was to identify armigera moths (i.e., the 'dangerous' species), and so the high precision and recall values for armigera moths in the original model meant that I was confident that this model would remain the best for the purposes of this project.
+
+conclusion
+In conclusion, I had most certainly achieved my initial goal of creating a machine learning model to distinguish between H. armigera and H. zea moths. Whilst by no means perfect, it definitely accomplished its intended purpose to act as an aid to farmers in the field and could absolutely be improved upon with even more data or further refinement. That being said, there are already many potential further changes I could make if I had more time on this project.
+
+Potential Further Steps
+The first change I could make would be to use the understanding I gathered about the most relevant features for each wing to help develop a more refined model – such a model would treat each wing separately, and would be able to distinguish between the two species based on the most relevant features for each wing, rather than generalising across all wings, and this would likely allow for a solid increase in performance. Additionally, I could make use of the continuous admixture data to create a regression model rather than a classification model. The models I have made in this project have no understanding of the links between armigera, zea, and hybrid (specifically that a hybrid is a mix of the two), and so a regression model could make use of this to potentially improve accuracy. Whilst I did start experimenting with this a little bit over the course of the project, I did not have enough time to fully explore this avenue, and so it would be interesting to see how well such a model could perform.
