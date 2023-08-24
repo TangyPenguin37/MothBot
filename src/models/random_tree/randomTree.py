@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split
 from sklearn.metrics import classification_report
+from tqdm import trange
 
 GROUPING_LEVEL = 1
 USE_CROSS_VAL = False
@@ -24,37 +25,45 @@ data = np.loadtxt(filepath,
 x = data[:, :-1]
 y = data[:, -1]
 
-train_x, test_x, train_y, test_y = train_test_split(x,
-                                                    y,
-                                                    test_size=0.2,
-                                                    stratify=y)
+def run():
+    train_x, test_x, train_y, test_y = train_test_split(x,
+                                                        y,
+                                                        test_size=0.2,
+                                                        stratify=y)
 
-model = RandomForestClassifier()
+    model = RandomForestClassifier()
 
-if USE_CROSS_VAL:
+    if USE_CROSS_VAL:
 
-    kfold = StratifiedKFold(n_splits=5, shuffle=True)
+        kfold = StratifiedKFold(n_splits=5, shuffle=True)
 
-    accuracy = cross_val_score(model, x, y, cv=kfold, scoring='accuracy')
-    precision = cross_val_score(model, x, y, cv=kfold, scoring='precision')
-    recall = cross_val_score(model, x, y, cv=kfold, scoring='recall')
-    f1 = cross_val_score(model, x, y, cv=kfold, scoring='f1')
+        accuracy = cross_val_score(model, x, y, cv=kfold, scoring='accuracy')
+        precision = cross_val_score(model, x, y, cv=kfold, scoring='precision')
+        recall = cross_val_score(model, x, y, cv=kfold, scoring='recall')
+        f1 = cross_val_score(model, x, y, cv=kfold, scoring='f1')
 
-    print(f'Accuracy:{accuracy.mean(): .3f}')
-    print(f'Precision:{precision.mean(): .3f}')
-    print(f'Recall:{recall.mean(): .3f}')
-    print(f'F1:{f1.mean(): .3f}')
+        print(f'Accuracy:{accuracy.mean(): .3f}')
+        print(f'Precision:{precision.mean(): .3f}')
+        print(f'Recall:{recall.mean(): .3f}')
+        print(f'F1:{f1.mean(): .3f}')
 
-else:
+    else:
 
-    model.fit(train_x, train_y)
+        model.fit(train_x, train_y)
 
-    test_preds = model.predict(test_x)
+        # scores = classification_report(test_y,
+        #                             model.predict(test_x),
+        #                             labels=[0, 1],
+        #                             target_names=["arm", "zea"],
+        #                             digits=3)
 
-    scores = classification_report(test_y,
-                                   test_preds,
-                                   labels=[0, 1],
-                                   target_names=["arm", "zea"],
-                                   digits=3)
+        # print(scores)
 
-    print(scores)
+        return model.score(test_x, test_y)
+
+if __name__ == "__main__":
+
+    accuracy = [run() for _ in trange(100)]
+
+    print(f"Average accuracy: {np.mean(accuracy)}")
+    print(f"Standard deviation: {np.std(accuracy)}")
