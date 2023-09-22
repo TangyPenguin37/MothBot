@@ -8,7 +8,7 @@ from sklearn.model_selection import StratifiedKFold, KFold, train_test_split, cr
 GROUPING_LEVEL = 1
 USE_CROSS_VAL = False
 STRATIFIED = True
-EXCLUDED_COLUMNS = ["filename"]
+EXCLUDED_COLUMNS = ["filename", "location", "side"]
 
 suffixes = ["", "_grouped", "_grouped_further"]
 
@@ -74,13 +74,26 @@ def main():
 
         accuracy = model.score(x_test, y_test)
 
-        return accuracy
+        headers = [headers[i] for i in columns]
+
+        return accuracy, model.coef_, headers
 
 if __name__ == "__main__":
-    accuracies = []
+    # accuracies = []
 
-    for _ in trange(1000):
-        accuracies.append(main())
+    # for _ in trange(1000):
+    #     accuracies.append(main())
 
-    print(f"Average Accuracy: {np.mean(accuracies)}")
-    print(f"Standard Deviation: {np.std(accuracies)}")
+    # print(f"Average Accuracy: {np.mean(accuracies)}")
+    # print(f"Standard Deviation: {np.std(accuracies)}")
+
+    accuracy, coefs, headers = main()
+
+    coeffs_dict = dict(zip(headers, coefs[0]))
+
+    coeffs_dict = dict(sorted(coeffs_dict.items(), key=lambda item: item[1]))
+
+    print(f"Accuracy: {accuracy}")
+    print("\nCoefs:")
+    for key, value in coeffs_dict.items():
+        print(f"{key}: {value}")
