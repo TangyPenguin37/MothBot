@@ -105,6 +105,8 @@ In this case, the suffixes _v and _d refer to the ventral and dorsal sides respe
 
 Whilst there were unsurprisingly no differences between left and right wings, I found area, feret diameter, and minor axis length to be most important for the front wings, with ventral colour being the most important feature for the rear wings. This was interesting, and gave some insight which could be used to create more specific models for each wing location if I had the time in this project to do so.
 
+To help build this case, the calculated coefficients of the logistic regression model that I had created (again not including hybrids) were also taken and sorted by magnitude (disregarding polarity). The features with the largest magnitudes were the most important in determining a predicted output, and thus highlighted the most important features in the dataset. The polarities of the coefficients also indicated whether a feature was positively or negatively correlated with the predicted output, and thus whether a feature was more likely to be associated with H. armigera or H. zea moths.
+
 In analysing all this data, I stumbled across another issue: class imbalances.
 
 Class Imbalance
