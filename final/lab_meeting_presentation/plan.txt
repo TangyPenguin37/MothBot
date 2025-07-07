@@ -1,0 +1,61 @@
+background
+Helicoverpa armigera - one of the world’s worst crop pests, recently invaded South America (2013)
+hybridised w/ Helicoverpa zea and spread genes for resistance to Bt toxins
+difficult to distinguish - can only be done by genotyping - already long process, but getting worse as species hybridise more
+need to find a way to distinguish them in the field
+idea - use machine learning model to distinguish them using only images of their wings
+
+first step - get images - from gabby - easy!
+
+second step - extract features
+crop and separate wing and analyse using imagej
+measure hue value of wing using imagej and split by threshold
+find largest shape and measure (list features) and save to csv
+use python to find shape and colour (explain efd and k-means) and add to csv - originally planned to use R but didnt work as well (issues with missing packages etc. + python more familiar)
+
+first tried simple algorithms
+tried logistic regression - accuracies ______ (73% multiclass - but redo with old data?)
+tried LDA - change one line - accuracy _____
+above values w/ confidence intervals/std
+
+// LDA worse but then access to new data (Jacob) helped LDA improve to be better
+
+stratified splits, cross validation (at least before full batch) helped improve performance
+
+gave basic baseline for neural networks
+then moved onto neural networks
+first tried with csv - almost matching LDA - shows potential - show all values
+then tried with images directly - didn't come as close (even w/ different architectures and pretrained model)
+
+focusing on csv - made some optimisations
+
+learning rate scheduler, early stopping, dropout, (//weight decay?), regularization, batch normalisation, different architectures, gradient clipping
+
+all helped except dropout, regularization, gradient clipping - got to above 80% accuracy
+
+normalising data helps a lot - training data only
+learning rate scheduler helped to refine at the end - show tensorboard graph with drops 
+
+LDA still isn't too far off - makes sense given assumption about normal distribution - show histogram of area and maybe other values
+
+some issues - class imbalance and pseudoreplication
+
+grouping - multiple samples for same individual - grouping by wing worked best - best would be to group all samples from same individual together, but limits size of dataset, so performance suffers
+compromise - group by wings - still gives good performance, but allows for larger dataset
+used with better splitting to avoid pseudoreplication across train/val sets
+
+two types of baseline - zero rate and random rate
+actual baseline - 0.72564789991^2+0.14030384271^2+0.13404825737^2 = 0.56421897822
+balanced baseline = 0.3267
+
+imbalance arguably better as majority class is more important to get right - fraud detection example
+but balancing classes shows accuracy isnt just because of majority class - split 33% each class gives approx 65% accuracy (vs 57 for LDA)
+
+accuracy arguably not the best metric - confusion matrix allows calculation of precision and recall (explain both)
+shows precision and recall good for armigera, not so much for hybrids and zea
+this isn't as bad as we want to detect armigera more often than zea - similar to fraud detection example
+balancing classes causes precision and recall to be more similar across all classes - balance can be adjusted as needed to give desired precision and recall
+
+overall - machine learning works, specifically best with a feed-forward neural network - whilst accuracy won't be perfect, it acts as an aid for farmers in the field, and could be improved with more data and further refinement
+
+thanks to api and gabby and all for listening :)
