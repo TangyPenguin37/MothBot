@@ -1,13 +1,1 @@
 __pycache__
-admin
-utils
-archive/data
-data/batch1/orig
-data/batch1/split
-data/batch2/orig
-data/batch2/split
-hpc_backup_*
-logs
-plan.txt
-*.pkl
-*.h5
