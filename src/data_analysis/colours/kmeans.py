@@ -47,7 +47,7 @@ def get_kmeans(filepath, n_clusters=2, second_biggest=False):
         contour = sorted(contours, key=cv2.contourArea, reverse=True)[1]
 
     if cv2.contourArea(contour) < 20000 or contour is None:
-        print("No leaf found!")
+        print("No wing found!")
         return None, None, None
 
     mask = np.zeros_like(mask, dtype=np.uint8)
